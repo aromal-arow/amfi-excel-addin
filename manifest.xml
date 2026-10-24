@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
-           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
-           xsi:type="TaskPaneApp">
+<OfficeApp
+    xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+    xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+    xsi:type="TaskPaneApp">
 
   <Id>7b4dcd91-36e1-4b94-a0e5-2b4f9e92a101</Id>
-  <Version>1.1.0.0</Version>
+  <Version>1.2.0.0</Version>
   <ProviderName>Aromal</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
 
@@ -36,15 +37,18 @@
 
   <Permissions>ReadWriteDocument</Permissions>
 
-  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
-                    xsi:type="VersionOverridesV1_0">
+  <VersionOverrides
+      xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+      xsi:type="VersionOverridesV1_0">
+
+    <Requirements>
+      <bt:Sets DefaultMinVersion="1.1">
+        <bt:Set Name="CustomFunctionsRuntime" MinVersion="1.1"/>
+      </bt:Sets>
+    </Requirements>
 
     <Hosts>
       <Host xsi:type="Workbook">
-
-        <Runtimes>
-          <Runtime resid="Taskpane.Url" lifetime="long"/>
-        </Runtimes>
 
         <AllFormFactors>
 
@@ -55,7 +59,7 @@
             </Script>
 
             <Page>
-              <SourceLocation resid="Taskpane.Url"/>
+              <SourceLocation resid="Functions.Page.Url"/>
             </Page>
 
             <Metadata>
@@ -63,6 +67,7 @@
             </Metadata>
 
             <Namespace resid="Functions.Namespace"/>
+
           </ExtensionPoint>
 
         </AllFormFactors>
@@ -73,19 +78,27 @@
     <Resources>
 
       <bt:Urls>
-        <bt:Url id="Taskpane.Url"
-                DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/taskpane.html"/>
 
-        <bt:Url id="Functions.Script.Url"
-                DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.js"/>
+        <bt:Url
+            id="Functions.Script.Url"
+            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.js"/>
 
-        <bt:Url id="Functions.Metadata.Url"
-                DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.json"/>
+        <bt:Url
+            id="Functions.Page.Url"
+            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.html"/>
+
+        <bt:Url
+            id="Functions.Metadata.Url"
+            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.json"/>
+
       </bt:Urls>
 
       <bt:ShortStrings>
-        <bt:String id="Functions.Namespace"
-                   DefaultValue="AMFI"/>
+
+        <bt:String
+            id="Functions.Namespace"
+            DefaultValue="AMFI"/>
+
       </bt:ShortStrings>
 
     </Resources>
