@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+           xsi:type="TaskPaneApp">
+
+  <Id>7b4dcd91-36e1-4b94-a0e5-2b4f9e92a101</Id>
+
+  <Version>1.0.0.0</Version>
+  <ProviderName>Aromal</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+
+  <DisplayName DefaultValue="AMFI Mutual Fund Tools"/>
+  <Description DefaultValue="AMFI mutual fund data tools for Excel."/>
+
+  <IconUrl DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/icon.png"/>
+
+  <SupportUrl DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/"/>
+
+  <AppDomains>
+    <AppDomain>https://aromal-arow.github.io</AppDomain>
+    <AppDomain>https://amfii-nav-cores.aromalgreat.workers.dev</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Workbook"/>
+  </Hosts>
+
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/taskpane.html"/>
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+</OfficeApp>
