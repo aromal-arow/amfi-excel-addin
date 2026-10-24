@@ -1,24 +1,113 @@
 {
-    "$schema": "https://developer.microsoft.com/json-schemas/office-js/custom-functions.schema.json",
-    "functions": [
+  "$schema": "https://developer.microsoft.com/json-schemas/office-js/custom-functions.schema.json",
+  "functions": [
+    {
+      "id": "NAV",
+      "name": "NAV",
+      "description": "Returns the latest NAV for an AMFI mutual fund scheme.",
+      "result": {
+        "type": "number",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
         {
-            "id": "NAV",
-            "name": "NAV",
-            "description": "Returns the latest NAV for an AMFI mutual fund scheme.",
-            "helpUrl": "https://aromal-arow.github.io/amfi-excel-addin/",
-            "result": {
-                "type": "number",
-                "dimensionality": "scalar"
-            },
-            "parameters": [
-                {
-                    "id": "schemeCode",
-                    "name": "Scheme Code",
-                    "description": "AMFI scheme code.",
-                    "type": "number",
-                    "dimensionality": "scalar"
-                }
-            ]
+          "id": "schemeCode",
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
         }
-    ]
+      ]
+    },
+    {
+      "id": "NAME",
+      "name": "NAME",
+      "description": "Returns the mutual fund scheme name.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "id": "schemeCode",
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    },
+    {
+      "id": "ISIN",
+      "name": "ISIN",
+      "description": "Returns the ISIN for an AMFI mutual fund scheme.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "id": "schemeCode",
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    },
+    {
+      "id": "PLAN",
+      "name": "PLAN",
+      "description": "Returns the plan type for an AMFI mutual fund scheme.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "id": "schemeCode",
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    },
+    {
+      "id": "OPTION",
+      "name": "OPTION",
+      "description": "Returns the option type for an AMFI mutual fund scheme.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "id": "schemeCode",
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    },
+    {
+      "id": "DATE",
+      "name": "DATE",
+      "description": "Returns the NAV date for an AMFI mutual fund scheme.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "id": "schemeCode",
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    }
+  ]
 }
