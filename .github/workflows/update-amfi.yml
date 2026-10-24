@@ -1,0 +1,51 @@
+name: Update AMFI NAV Data
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "30 18 * * 1-5"
+
+permissions:
+  contents: write
+
+jobs:
+  update-nav:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create data folder
+        run: mkdir -p data
+
+      - name: Download latest AMFI NAV data
+        run: |
+          curl -L --fail --retry 3 \
+            "https://portal.amfiindia.com/spages/NAVAll.txt" \
+            -o data/NAVAll.txt
+
+      - name: Verify downloaded file
+        run: |
+          echo "Downloaded file size:"
+          wc -c data/NAVAll.txt
+
+          echo "Number of lines:"
+          wc -l data/NAVAll.txt
+
+          head -n 5 data/NAVAll.txt
+
+      - name: Commit updated NAV data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/NAVAll.txt
+
+          if git diff --cached --quiet; then
+            echo "No NAV changes detected."
+          else
+            git commit -m "Update AMFI NAV data"
+            git push
+          fi
