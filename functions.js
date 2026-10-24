@@ -3,19 +3,27 @@ const AMFI_DATA_URL =
 
 let amfiCache = null;
 
+
+/**
+ * Downloads and parses the latest AMFI NAV data.
+ */
 async function loadAMFIData() {
 
-    if (amfiCache) {
+    // Use cached data if already downloaded
+    if (amfiCache !== null) {
         return amfiCache;
     }
 
     const response = await fetch(AMFI_DATA_URL);
 
     if (!response.ok) {
-        throw new Error("HTTP " + response.status);
+        throw new Error(
+            "Unable to load AMFI data. HTTP " + response.status
+        );
     }
 
     const text = await response.text();
+
     const funds = {};
 
     const lines = text.split(/\r?\n/);
@@ -24,10 +32,22 @@ async function loadAMFIData() {
 
         const parts = line.split(";");
 
-        if (parts.length >= 6) {
+        // Current AMFI format:
+        //
+        // 0 = Scheme Code
+        // 1 = ISIN 1
+        // 2 = ISIN 2
+        // 3 = Scheme Name
+        // 4 = Plan
+        // 5 = Option
+        // 6 = NAV
+        // 7 = Date
+
+        if (parts.length >= 8) {
 
             const code = parts[0].trim();
 
+            // Ignore headings/category rows
             if (/^\d+$/.test(code)) {
 
                 funds[code] = {
@@ -35,8 +55,10 @@ async function loadAMFIData() {
                     isin1: (parts[1] || "").trim(),
                     isin2: (parts[2] || "").trim(),
                     name: (parts[3] || "").trim(),
-                    nav: (parts[4] || "").trim(),
-                    date: (parts[5] || "").trim()
+                    plan: (parts[4] || "").trim(),
+                    option: (parts[5] || "").trim(),
+                    nav: (parts[6] || "").trim(),
+                    date: (parts[7] || "").trim()
                 };
 
             }
@@ -44,10 +66,18 @@ async function loadAMFIData() {
     }
 
     amfiCache = funds;
+
     return funds;
 }
 
 
+/**
+ * Returns the latest NAV for an AMFI scheme code.
+ *
+ * @customfunction NAV
+ * @param {number} schemeCode AMFI scheme code.
+ * @returns {Promise<number>} Latest NAV.
+ */
 async function nav(schemeCode) {
 
     try {
@@ -60,12 +90,14 @@ async function nav(schemeCode) {
 
         const fund = funds[code];
 
+        // Scheme not found
         if (!fund) {
             return -404;
         }
 
         const value = Number(fund.nav);
 
+        // Scheme exists but NAV isn't numeric
         if (!Number.isFinite(value)) {
             return -405;
         }
@@ -74,10 +106,12 @@ async function nav(schemeCode) {
 
     } catch (error) {
 
+        // Data download/runtime problem
         return -500;
 
     }
 }
 
 
+// Register function with Excel
 CustomFunctions.associate("NAV", nav);
