@@ -1,0 +1,24 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/office-js/custom-functions.schema.json",
+    "functions": [
+        {
+            "id": "NAV",
+            "name": "NAV",
+            "description": "Returns the latest NAV for an AMFI mutual fund scheme.",
+            "helpUrl": "https://aromal-arow.github.io/amfi-excel-addin/",
+            "result": {
+                "type": "number",
+                "dimensionality": "scalar"
+            },
+            "parameters": [
+                {
+                    "id": "schemeCode",
+                    "name": "Scheme Code",
+                    "description": "AMFI scheme code.",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                }
+            ]
+        }
+    ]
+}
