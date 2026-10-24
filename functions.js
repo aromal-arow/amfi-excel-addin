@@ -4,12 +4,11 @@ const AMFI_DATA_URL =
 let amfiCache = null;
 
 
-/**
- * Downloads and parses the latest AMFI NAV data.
+/*
+ * Load and parse AMFI data.
  */
 async function loadAMFIData() {
 
-    // Use cached data if already downloaded
     if (amfiCache !== null) {
         return amfiCache;
     }
@@ -23,7 +22,6 @@ async function loadAMFIData() {
     }
 
     const text = await response.text();
-
     const funds = {};
 
     const lines = text.split(/\r?\n/);
@@ -32,22 +30,23 @@ async function loadAMFIData() {
 
         const parts = line.split(";");
 
-        // Current AMFI format:
-        //
-        // 0 = Scheme Code
-        // 1 = ISIN 1
-        // 2 = ISIN 2
-        // 3 = Scheme Name
-        // 4 = Plan
-        // 5 = Option
-        // 6 = NAV
-        // 7 = Date
+        /*
+         * Current AMFI format:
+         *
+         * 0 = Scheme Code
+         * 1 = ISIN 1
+         * 2 = ISIN 2
+         * 3 = Scheme Name
+         * 4 = Plan
+         * 5 = Option
+         * 6 = NAV
+         * 7 = Date
+         */
 
         if (parts.length >= 8) {
 
             const code = parts[0].trim();
 
-            // Ignore headings/category rows
             if (/^\d+$/.test(code)) {
 
                 funds[code] = {
@@ -71,47 +70,137 @@ async function loadAMFIData() {
 }
 
 
-/**
- * Returns the latest NAV for an AMFI scheme code.
- *
- * @customfunction NAV
- * @param {number} schemeCode AMFI scheme code.
- * @returns {Promise<number>} Latest NAV.
+/*
+ * Find a fund using its AMFI scheme code.
  */
-async function nav(schemeCode) {
+async function getFund(schemeCode) {
 
-    try {
+    const funds = await loadAMFIData();
 
-        const funds = await loadAMFIData();
+    const code = String(
+        Math.trunc(Number(schemeCode))
+    );
 
-        const code = String(
-            Math.trunc(Number(schemeCode))
-        );
-
-        const fund = funds[code];
-
-        // Scheme not found
-        if (!fund) {
-            return -404;
-        }
-
-        const value = Number(fund.nav);
-
-        // Scheme exists but NAV isn't numeric
-        if (!Number.isFinite(value)) {
-            return -405;
-        }
-
-        return value;
-
-    } catch (error) {
-
-        // Data download/runtime problem
-        return -500;
-
-    }
+    return funds[code] || null;
 }
 
 
-// Register function with Excel
+/*
+ * AMFI.NAV
+ */
+async function nav(schemeCode) {
+
+    const fund = await getFund(schemeCode);
+
+    if (!fund) {
+        throw new Error("Scheme code not found");
+    }
+
+    const value = Number(fund.nav);
+
+    if (!Number.isFinite(value)) {
+        throw new Error("NAV unavailable");
+    }
+
+    return value;
+}
+
+
+/*
+ * AMFI.NAME
+ */
+async function name(schemeCode) {
+
+    const fund = await getFund(schemeCode);
+
+    if (!fund) {
+        throw new Error("Scheme code not found");
+    }
+
+    return fund.name;
+}
+
+
+/*
+ * AMFI.ISIN
+ */
+async function isin(schemeCode) {
+
+    const fund = await getFund(schemeCode);
+
+    if (!fund) {
+        throw new Error("Scheme code not found");
+    }
+
+    if (
+        fund.isin1 &&
+        fund.isin1 !== "-"
+    ) {
+        return fund.isin1;
+    }
+
+    if (
+        fund.isin2 &&
+        fund.isin2 !== "-"
+    ) {
+        return fund.isin2;
+    }
+
+    return "N/A";
+}
+
+
+/*
+ * AMFI.PLAN
+ */
+async function plan(schemeCode) {
+
+    const fund = await getFund(schemeCode);
+
+    if (!fund) {
+        throw new Error("Scheme code not found");
+    }
+
+    return fund.plan;
+}
+
+
+/*
+ * AMFI.OPTION
+ */
+async function option(schemeCode) {
+
+    const fund = await getFund(schemeCode);
+
+    if (!fund) {
+        throw new Error("Scheme code not found");
+    }
+
+    return fund.option;
+}
+
+
+/*
+ * AMFI.DATE
+ */
+async function navDate(schemeCode) {
+
+    const fund = await getFund(schemeCode);
+
+    if (!fund) {
+        throw new Error("Scheme code not found");
+    }
+
+    return fund.date;
+}
+
+
+/*
+ * Register functions with Excel.
+ */
 CustomFunctions.associate("NAV", nav);
+CustomFunctions.associate("NAME", name);
+CustomFunctions.associate("ISIN", isin);
+CustomFunctions.associate("PLAN", plan);
+CustomFunctions.associate("OPTION", option);
+CustomFunctions.associate("DATE", navDate);
