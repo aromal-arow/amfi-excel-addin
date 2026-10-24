@@ -5,19 +5,18 @@ let amfiCache = null;
 
 async function loadAMFIData() {
 
-    if (amfiCache !== null) {
+    if (amfiCache) {
         return amfiCache;
     }
 
     const response = await fetch(AMFI_DATA_URL);
 
     if (!response.ok) {
-        throw new Error("Unable to load AMFI data");
+        throw new Error("HTTP " + response.status);
     }
 
     const text = await response.text();
-
-    const funds = new Map();
+    const funds = {};
 
     const lines = text.split(/\r?\n/);
 
@@ -25,54 +24,60 @@ async function loadAMFIData() {
 
         const parts = line.split(";");
 
-        // Actual scheme rows begin with a numeric scheme code
-        if (parts.length >= 5 && /^\d+$/.test(parts[0].trim())) {
+        if (parts.length >= 6) {
 
-            const schemeCode = parts[0].trim();
+            const code = parts[0].trim();
 
-            funds.set(schemeCode, {
-                code: schemeCode,
-                isin1: (parts[1] || "").trim(),
-                isin2: (parts[2] || "").trim(),
-                name: (parts[3] || "").trim(),
-                nav: (parts[4] || "").trim(),
-                date: (parts[5] || "").trim()
-            });
+            if (/^\d+$/.test(code)) {
+
+                funds[code] = {
+                    code: code,
+                    isin1: (parts[1] || "").trim(),
+                    isin2: (parts[2] || "").trim(),
+                    name: (parts[3] || "").trim(),
+                    nav: (parts[4] || "").trim(),
+                    date: (parts[5] || "").trim()
+                };
+
+            }
         }
     }
 
     amfiCache = funds;
-
     return funds;
 }
 
 
-/**
- * Returns the latest NAV for an AMFI scheme code.
- *
- * @customfunction NAV
- * @param {number} schemeCode AMFI scheme code.
- * @returns {Promise<number>} Latest NAV.
- */
 async function nav(schemeCode) {
 
-    const funds = await loadAMFIData();
+    try {
 
-    const code = String(Math.trunc(schemeCode));
+        const funds = await loadAMFIData();
 
-    const fund = funds.get(code);
+        const code = String(
+            Math.trunc(Number(schemeCode))
+        );
 
-    if (!fund) {
-        throw new Error("Scheme code not found: " + code);
+        const fund = funds[code];
+
+        if (!fund) {
+            return -404;
+        }
+
+        const value = Number(fund.nav);
+
+        if (!Number.isFinite(value)) {
+            return -405;
+        }
+
+        return value;
+
+    } catch (error) {
+
+        return -500;
+
     }
-
-    const value = parseFloat(fund.nav);
-
-    if (Number.isNaN(value)) {
-        throw new Error("NAV unavailable for scheme: " + code);
-    }
-
-    return value;
 }
+
 
 CustomFunctions.associate("NAV", nav);
