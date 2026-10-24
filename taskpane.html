@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AMFI Mutual Fund Tools</title>
+
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-bottom: 5px;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f3f3f3;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>AMFI Mutual Fund Tools</h2>
+
+    <p>Excel add-in is running.</p>
+
+    <div class="status" id="status">
+        Connecting to Excel...
+    </div>
+
+    <script>
+        Office.onReady(function (info) {
+
+            if (info.host === Office.HostType.Excel) {
+                document.getElementById("status").innerHTML =
+                    "✓ Connected to Excel";
+            } else {
+                document.getElementById("status").innerHTML =
+                    "Open this add-in inside Excel.";
+            }
+
+        });
+    </script>
+
+</body>
+</html>
