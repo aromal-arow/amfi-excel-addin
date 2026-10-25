@@ -11,7 +11,6 @@
       },
       "parameters": [
         {
-          "id": "schemeCode",
           "name": "Scheme Code",
           "description": "AMFI scheme code.",
           "type": "number",
@@ -22,14 +21,81 @@
     {
       "id": "SCHEMENAME",
       "name": "SCHEMENAME",
-      "description": "Returns the name of an AMFI mutual fund scheme.",
+      "description": "Returns the mutual fund scheme name.",
       "result": {
         "type": "string",
         "dimensionality": "scalar"
       },
       "parameters": [
         {
-          "id": "schemeCode",
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    },
+    {
+      "id": "ISIN",
+      "name": "ISIN",
+      "description": "Returns the ISIN for the mutual fund scheme.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    },
+    {
+      "id": "PLANTYPE",
+      "name": "PLANTYPE",
+      "description": "Returns the plan type for the mutual fund scheme.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    },
+    {
+      "id": "OPTIONTYPE",
+      "name": "OPTIONTYPE",
+      "description": "Returns the option type for the mutual fund scheme.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
+    },
+    {
+      "id": "NAVDATE",
+      "name": "NAVDATE",
+      "description": "Returns the date of the latest NAV.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
           "name": "Scheme Code",
           "description": "AMFI scheme code.",
           "type": "number",
