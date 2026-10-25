@@ -1,52 +1,463 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>AMFI Mutual Fund Tools</title>
 
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 
-    <!-- Custom functions run in this SAME shared runtime -->
-    <script src="functions.js"></script>
-
     <style>
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            padding: 20px;
+        * {
+            box-sizing: border-box;
         }
 
-        #status {
-            margin-top: 15px;
+        body {
+            margin: 0;
+            padding: 18px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #242424;
+            background: #ffffff;
+        }
+
+        h1 {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            margin-bottom: 18px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #b5b5b5;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #0078d4;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        select {
+            flex: 1;
+            min-width: 0;
+            padding: 7px;
+            border: 1px solid #c8c8c8;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .status {
+            margin-top: 14px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .results {
+            margin-top: 12px;
+        }
+
+        .fund {
+            border: 1px solid #e1e1e1;
+            border-radius: 6px;
             padding: 12px;
-            background: #f3f3f3;
-            border-radius: 5px;
+            margin-bottom: 10px;
+            background: #fff;
+        }
+
+        .fund-name {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .tags {
+            margin-top: 7px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 7px;
+            margin-right: 4px;
+            margin-bottom: 4px;
+            border-radius: 10px;
+            background: #f2f2f2;
+            font-size: 11px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .label {
+            display: block;
+            font-size: 10px;
+            color: #777;
+        }
+
+        .value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .nav {
+            font-size: 17px;
+        }
+
+        .code {
+            font-family: Consolas, monospace;
+        }
+
+        .empty {
+            margin-top: 25px;
+            text-align: center;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .loading {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
         }
     </style>
 </head>
 
 <body>
 
-    <h2>AMFI Mutual Fund Tools</h2>
+<h1>AMFI Mutual Fund Search</h1>
 
-    <p>Shared Runtime Test</p>
+<div class="subtitle">
+    Latest AMFI NAV data
+</div>
 
-    <div id="status">
-        Starting...
-    </div>
+<input
+    id="search"
+    class="search-box"
+    type="text"
+    placeholder="Search fund, AMC or scheme code..."
+    autocomplete="off"
+/>
 
-    <script>
-        Office.onReady(function(info) {
+<div class="filters">
 
-            if (info.host === Office.HostType.Excel) {
-                document.getElementById("status").innerHTML =
-                    "✓ Shared runtime connected to Excel";
-            } else {
-                document.getElementById("status").innerHTML =
-                    "Open this page inside Excel";
+    <select id="planFilter">
+        <option value="">All plans</option>
+        <option value="direct">Direct</option>
+        <option value="regular">Regular</option>
+    </select>
+
+    <select id="optionFilter">
+        <option value="">All options</option>
+        <option value="growth">Growth</option>
+        <option value="idcw">IDCW</option>
+    </select>
+
+</div>
+
+<div id="status" class="status">
+    Loading AMFI data...
+</div>
+
+<div id="results" class="results"></div>
+
+
+<script>
+
+const DATA_URL =
+    "https://aromal-arow.github.io/amfi-excel-addin/data/NAVAll.txt";
+
+let funds = [];
+
+
+Office.onReady(function () {
+    loadData();
+});
+
+
+async function loadData() {
+
+    const status = document.getElementById("status");
+
+    try {
+
+        const response = await fetch(DATA_URL);
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const text = await response.text();
+
+        const lines = text.split(/\r?\n/);
+
+        funds = [];
+
+        for (const line of lines) {
+
+            const parts = line.split(";");
+
+            if (parts.length < 8) {
+                continue;
             }
 
-        });
-    </script>
+            const code = parts[0].trim();
+
+            if (!/^\d+$/.test(code)) {
+                continue;
+            }
+
+            funds.push({
+                code: code,
+                isin1: (parts[1] || "").trim(),
+                isin2: (parts[2] || "").trim(),
+                name: (parts[3] || "").trim(),
+                plan: (parts[4] || "").trim(),
+                option: (parts[5] || "").trim(),
+                nav: (parts[6] || "").trim(),
+                date: (parts[7] || "").trim()
+            });
+        }
+
+        status.textContent =
+            funds.length.toLocaleString() +
+            " schemes loaded";
+
+    } catch (error) {
+
+        status.textContent =
+            "Unable to load AMFI data: " +
+            error.message;
+    }
+}
+
+
+function searchFunds() {
+
+    const query =
+        document.getElementById("search")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const plan =
+        document.getElementById("planFilter")
+            .value;
+
+    const option =
+        document.getElementById("optionFilter")
+            .value;
+
+    const results =
+        document.getElementById("results");
+
+    if (!query) {
+
+        results.innerHTML =
+            '<div class="empty">' +
+            'Start typing a fund name, AMC or scheme code.' +
+            '</div>';
+
+        return;
+    }
+
+
+    const words =
+        query
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    const matches = funds.filter(function (fund) {
+
+        const searchable =
+            (
+                fund.code + " " +
+                fund.name + " " +
+                fund.plan + " " +
+                fund.option + " " +
+                fund.isin1 + " " +
+                fund.isin2
+            ).toLowerCase();
+
+
+        const textMatches =
+            words.every(function (word) {
+                return searchable.includes(word);
+            });
+
+
+        const planMatches =
+            !plan ||
+            fund.plan.toLowerCase().includes(plan);
+
+
+        const optionMatches =
+            !option ||
+            fund.option.toLowerCase().includes(option);
+
+
+        return (
+            textMatches &&
+            planMatches &&
+            optionMatches
+        );
+
+    }).slice(0, 30);
+
+
+    renderResults(matches);
+}
+
+
+function renderResults(matches) {
+
+    const results =
+        document.getElementById("results");
+
+    if (matches.length === 0) {
+
+        results.innerHTML =
+            '<div class="empty">' +
+            'No matching schemes found.' +
+            '</div>';
+
+        return;
+    }
+
+
+    results.innerHTML =
+        matches.map(function (fund) {
+
+            const isin =
+                fund.isin1 &&
+                fund.isin1 !== "-"
+                    ? fund.isin1
+                    : fund.isin2;
+
+
+            return `
+                <div class="fund">
+
+                    <div class="fund-name">
+                        ${escapeHtml(fund.name)}
+                    </div>
+
+                    <div class="tags">
+
+                        <span class="tag">
+                            ${escapeHtml(fund.plan)}
+                        </span>
+
+                        <span class="tag">
+                            ${escapeHtml(fund.option)}
+                        </span>
+
+                    </div>
+
+                    <div class="details">
+
+                        <div>
+                            <span class="label">
+                                NAV
+                            </span>
+
+                            <span class="value nav">
+                                ${escapeHtml(fund.nav)}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="label">
+                                NAV Date
+                            </span>
+
+                            <span class="value">
+                                ${escapeHtml(fund.date)}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="label">
+                                Scheme Code
+                            </span>
+
+                            <span class="value code">
+                                ${escapeHtml(fund.code)}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="label">
+                                ISIN
+                            </span>
+
+                            <span class="value">
+                                ${escapeHtml(isin || "N/A")}
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+document
+    .getElementById("search")
+    .addEventListener(
+        "input",
+        searchFunds
+    );
+
+
+document
+    .getElementById("planFilter")
+    .addEventListener(
+        "change",
+        searchFunds
+    );
+
+
+document
+    .getElementById("optionFilter")
+    .addEventListener(
+        "change",
+        searchFunds
+    );
+
+</script>
 
 </body>
 </html>
