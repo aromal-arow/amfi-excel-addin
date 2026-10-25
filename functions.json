@@ -18,6 +18,24 @@
           "dimensionality": "scalar"
         }
       ]
+    },
+    {
+      "id": "NAME",
+      "name": "NAME",
+      "description": "Returns the name of an AMFI mutual fund scheme.",
+      "result": {
+        "type": "string",
+        "dimensionality": "scalar"
+      },
+      "parameters": [
+        {
+          "id": "schemeCode",
+          "name": "Scheme Code",
+          "description": "AMFI scheme code.",
+          "type": "number",
+          "dimensionality": "scalar"
+        }
+      ]
     }
   ]
 }
