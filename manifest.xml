@@ -7,110 +7,115 @@
     xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
     xsi:type="TaskPaneApp">
 
-    <Id>81c9c711-41ba-4f71-93c8-9326c2f51701</Id>
+  <Id>5e8a7335-7498-47df-8a85-a67231e44001</Id>
 
-    <Version>2.1.0.0</Version>
+  <Version>1.0.0.0</Version>
 
-    <ProviderName>Aromal</ProviderName>
+  <ProviderName>Aromal</ProviderName>
 
-    <DefaultLocale>en-US</DefaultLocale>
+  <DefaultLocale>en-US</DefaultLocale>
 
-    <DisplayName DefaultValue="AMFI Mutual Fund Tools"/>
+  <DisplayName DefaultValue="AMFI NAV Test"/>
 
-    <Description DefaultValue="AMFI mutual fund data tools for Excel."/>
+  <Description DefaultValue="AMFI custom functions for Excel."/>
 
-    <IconUrl
-        DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/icon.png"/>
+  <IconUrl
+      DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/icon.png"/>
 
-    <SupportUrl
-        DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/"/>
+  <SupportUrl
+      DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/"/>
 
-    <AppDomains>
-        <AppDomain>https://aromal-arow.github.io</AppDomain>
-    </AppDomains>
+  <AppDomains>
+    <AppDomain>https://aromal-arow.github.io</AppDomain>
+  </AppDomains>
 
-    <Hosts>
-        <Host Name="Workbook"/>
-    </Hosts>
+  <Hosts>
+    <Host Name="Workbook"/>
+  </Hosts>
+
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="ExcelApi" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
+
+  <DefaultSettings>
+    <SourceLocation
+        DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/taskpane.html"/>
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides
+      xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+      xsi:type="VersionOverridesV1_0">
 
     <Requirements>
-        <Sets DefaultMinVersion="1.1">
-            <Set Name="ExcelApi" MinVersion="1.1"/>
-            <Set Name="SharedRuntime" MinVersion="1.1"/>
-        </Sets>
+      <bt:Sets DefaultMinVersion="1.1">
+        <bt:Set
+            Name="CustomFunctionsRuntime"
+            MinVersion="1.1"/>
+      </bt:Sets>
     </Requirements>
 
-    <DefaultSettings>
-        <SourceLocation
-            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/taskpane.html"/>
-    </DefaultSettings>
+    <Hosts>
 
-    <Permissions>ReadWriteDocument</Permissions>
+      <Host xsi:type="Workbook">
 
-    <VersionOverrides
-        xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
-        xsi:type="VersionOverridesV1_0">
+        <AllFormFactors>
 
-        <Hosts>
+          <ExtensionPoint xsi:type="CustomFunctions">
 
-            <Host xsi:type="Workbook">
+            <Script>
+              <SourceLocation resid="Functions.Script.Url"/>
+            </Script>
 
-                <Runtimes>
-                    <Runtime
-                        resid="Shared.Url"
-                        lifetime="long"/>
-                </Runtimes>
+            <Page>
+              <SourceLocation resid="Functions.Page.Url"/>
+            </Page>
 
-                <AllFormFactors>
+            <Metadata>
+              <SourceLocation resid="Functions.Metadata.Url"/>
+            </Metadata>
 
-                    <ExtensionPoint xsi:type="CustomFunctions">
+            <Namespace resid="Functions.Namespace"/>
 
-                        <Script>
-                            <SourceLocation resid="Shared.Url"/>
-                        </Script>
+          </ExtensionPoint>
 
-                        <Page>
-                            <SourceLocation resid="Shared.Url"/>
-                        </Page>
+        </AllFormFactors>
 
-                        <Metadata>
-                            <SourceLocation resid="Functions.Metadata.Url"/>
-                        </Metadata>
+      </Host>
 
-                        <Namespace resid="Functions.Namespace"/>
+    </Hosts>
 
-                    </ExtensionPoint>
+    <Resources>
 
-                </AllFormFactors>
+      <bt:Urls>
 
-            </Host>
+        <bt:Url
+            id="Functions.Script.Url"
+            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.js"/>
 
-        </Hosts>
+        <bt:Url
+            id="Functions.Page.Url"
+            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.html"/>
 
-        <Resources>
+        <bt:Url
+            id="Functions.Metadata.Url"
+            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.json"/>
 
-            <bt:Urls>
+      </bt:Urls>
 
-                <bt:Url
-                    id="Shared.Url"
-                    DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/taskpane.html"/>
+      <bt:ShortStrings>
 
-                <bt:Url
-                    id="Functions.Metadata.Url"
-                    DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.json"/>
+        <bt:String
+            id="Functions.Namespace"
+            DefaultValue="AMFI"/>
 
-            </bt:Urls>
+      </bt:ShortStrings>
 
-            <bt:ShortStrings>
+    </Resources>
 
-                <bt:String
-                    id="Functions.Namespace"
-                    DefaultValue="AMFI"/>
-
-            </bt:ShortStrings>
-
-        </Resources>
-
-    </VersionOverrides>
+  </VersionOverrides>
 
 </OfficeApp>
