@@ -8,16 +8,13 @@
     xsi:type="TaskPaneApp">
 
   <Id>91c628d4-5805-4e97-a349-5e23735e9001</Id>
-
-  <Version>2.0.0.0</Version>
+  <Version>3.0.0.0</Version>
 
   <ProviderName>Aromal</ProviderName>
-
   <DefaultLocale>en-US</DefaultLocale>
 
-  <DisplayName DefaultValue="AMFI NAV Test"/>
-
-  <Description DefaultValue="AMFI custom functions for Excel."/>
+  <DisplayName DefaultValue="AMFI Mutual Fund Tools"/>
+  <Description DefaultValue="AMFI mutual fund tools for Excel."/>
 
   <IconUrl
       DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/icon.png"/>
@@ -46,49 +43,151 @@
 
   <Permissions>ReadWriteDocument</Permissions>
 
+
   <VersionOverrides
       xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
       xsi:type="VersionOverridesV1_0">
 
+
+    <!-- CUSTOM FUNCTION REQUIREMENT -->
+
     <Requirements>
+
       <bt:Sets DefaultMinVersion="1.1">
+
         <bt:Set
             Name="CustomFunctionsRuntime"
             MinVersion="1.1"/>
+
       </bt:Sets>
+
     </Requirements>
+
 
     <Hosts>
 
       <Host xsi:type="Workbook">
+
+
+        <!-- CUSTOM FUNCTIONS -->
 
         <AllFormFactors>
 
           <ExtensionPoint xsi:type="CustomFunctions">
 
             <Script>
-              <SourceLocation resid="Functions.Script.Url"/>
+              <SourceLocation
+                  resid="Functions.Script.Url"/>
             </Script>
 
             <Page>
-              <SourceLocation resid="Functions.Page.Url"/>
+              <SourceLocation
+                  resid="Functions.Page.Url"/>
             </Page>
 
             <Metadata>
-              <SourceLocation resid="Functions.Metadata.Url"/>
+              <SourceLocation
+                  resid="Functions.Metadata.Url"/>
             </Metadata>
 
-            <Namespace resid="Functions.Namespace"/>
+            <Namespace
+                resid="Functions.Namespace"/>
 
           </ExtensionPoint>
 
         </AllFormFactors>
 
+
+        <!-- EXCEL RIBBON BUTTON -->
+
+        <DesktopFormFactor>
+
+          <FunctionFile resid="Taskpane.Url"/>
+
+          <ExtensionPoint
+              xsi:type="PrimaryCommandSurface">
+
+            <OfficeTab id="TabHome">
+
+              <Group id="AMFI.Group">
+
+                <Label resid="AMFI.Group.Label"/>
+
+
+                <Control
+                    xsi:type="Button"
+                    id="AMFI.OpenTaskpane">
+
+                  <Label
+                      resid="AMFI.Button.Label"/>
+
+                  <Supertip>
+
+                    <Title
+                        resid="AMFI.Button.Label"/>
+
+                    <Description
+                        resid="AMFI.Button.Description"/>
+
+                  </Supertip>
+
+
+                  <Icon>
+
+                    <bt:Image
+                        size="16"
+                        resid="AMFI.Icon"/>
+
+                    <bt:Image
+                        size="32"
+                        resid="AMFI.Icon"/>
+
+                    <bt:Image
+                        size="80"
+                        resid="AMFI.Icon"/>
+
+                  </Icon>
+
+
+                  <Action xsi:type="ShowTaskpane">
+
+                    <TaskpaneId>
+                      AMFI.Search
+                    </TaskpaneId>
+
+                    <SourceLocation
+                        resid="Taskpane.Url"/>
+
+                  </Action>
+
+                </Control>
+
+              </Group>
+
+            </OfficeTab>
+
+          </ExtensionPoint>
+
+        </DesktopFormFactor>
+
       </Host>
 
     </Hosts>
 
+
+    <!-- RESOURCES -->
+
     <Resources>
+
+
+      <bt:Images>
+
+        <bt:Image
+            id="AMFI.Icon"
+            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/icon.png"/>
+
+      </bt:Images>
+
 
       <bt:Urls>
 
@@ -104,7 +203,12 @@
             id="Functions.Metadata.Url"
             DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/functions.json"/>
 
+        <bt:Url
+            id="Taskpane.Url"
+            DefaultValue="https://aromal-arow.github.io/amfi-excel-addin/taskpane.html"/>
+
       </bt:Urls>
+
 
       <bt:ShortStrings>
 
@@ -112,7 +216,25 @@
             id="Functions.Namespace"
             DefaultValue="AMFI"/>
 
+        <bt:String
+            id="AMFI.Group.Label"
+            DefaultValue="AMFI"/>
+
+        <bt:String
+            id="AMFI.Button.Label"
+            DefaultValue="AMFI Tools"/>
+
       </bt:ShortStrings>
+
+
+      <bt:LongStrings>
+
+        <bt:String
+            id="AMFI.Button.Description"
+            DefaultValue="Search AMFI mutual funds and insert scheme codes."/>
+
+      </bt:LongStrings>
+
 
     </Resources>
 
