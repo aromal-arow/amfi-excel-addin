@@ -7,9 +7,9 @@
     xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
     xsi:type="TaskPaneApp">
 
-  <Id>3b74191d-63e5-4c48-a642-279e84247001</Id>
+  <Id>91c628d4-5805-4e97-a349-5e23735e9001</Id>
 
-  <Version>1.1.0.0</Version>
+  <Version>2.0.0.0</Version>
 
   <ProviderName>Aromal</ProviderName>
 
