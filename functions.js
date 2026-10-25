@@ -1,24 +1,12 @@
-/**
- * AMFI.SCHEMENAME
- */
-async function schemeName(schemeCode) {
-
-    try {
-
-        const fund = await getFund(schemeCode);
-
-        if (!fund) {
-            return "Scheme not found";
-        }
-
-        return fund.name;
-
-    } catch (error) {
-
-        return "Unable to load AMFI data";
-    }
+function nav(schemeCode) {
+    return 111;
 }
 
+function schemeName(schemeCode) {
+    return "SCHEME TEST";
+}
 
-CustomFunctions.associate("NAV", nav);
-CustomFunctions.associate("SCHEMENAME", schemeName);
+CustomFunctions.associate({
+    "NAV": nav,
+    "SCHEMENAME": schemeName
+});
