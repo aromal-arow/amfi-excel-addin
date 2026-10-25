@@ -60,7 +60,6 @@ async function loadAMFIData() {
                     nav: (parts[6] || "").trim(),
                     date: (parts[7] || "").trim()
                 };
-
             }
         }
     }
@@ -72,19 +71,28 @@ async function loadAMFIData() {
 
 
 /**
- * Returns the latest NAV for an AMFI scheme code.
+ * Find an AMFI scheme.
+ */
+async function getFund(schemeCode) {
+
+    const funds = await loadAMFIData();
+
+    const code = String(
+        Math.trunc(Number(schemeCode))
+    );
+
+    return funds[code] || null;
+}
+
+
+/**
+ * AMFI.NAV
  */
 async function nav(schemeCode) {
 
     try {
 
-        const funds = await loadAMFIData();
-
-        const code = String(
-            Math.trunc(Number(schemeCode))
-        );
-
-        const fund = funds[code];
+        const fund = await getFund(schemeCode);
 
         if (!fund) {
             return -404;
@@ -101,9 +109,31 @@ async function nav(schemeCode) {
     } catch (error) {
 
         return -500;
+    }
+}
 
+
+/**
+ * AMFI.NAME
+ */
+async function name(schemeCode) {
+
+    try {
+
+        const fund = await getFund(schemeCode);
+
+        if (!fund) {
+            return "Scheme not found";
+        }
+
+        return fund.name;
+
+    } catch (error) {
+
+        return "Unable to load AMFI data";
     }
 }
 
 
 CustomFunctions.associate("NAV", nav);
+CustomFunctions.associate("NAME", name);
