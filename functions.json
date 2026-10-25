@@ -20,8 +20,8 @@
       ]
     },
     {
-      "id": "NAME",
-      "name": "NAME",
+      "id": "SCHEMENAME",
+      "name": "SCHEMENAME",
       "description": "Returns the name of an AMFI mutual fund scheme.",
       "result": {
         "type": "string",
