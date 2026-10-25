@@ -113,6 +113,12 @@
 
                 <Label resid="AMFI.Group.Label"/>
 
+                <Icon>
+                    <bt:Image size="16" resid="AMFI.Icon"/>
+                    <bt:Image size="32" resid="AMFI.Icon"/>
+                    <bt:Image size="80" resid="AMFI.Icon"/>
+                </Icon>
+
 
                 <Control
                     xsi:type="Button"
