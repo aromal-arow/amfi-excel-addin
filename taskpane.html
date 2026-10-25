@@ -6,101 +6,47 @@
 
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 
+    <!-- Custom functions run in this SAME shared runtime -->
+    <script src="functions.js"></script>
+
     <style>
         body {
             font-family: "Segoe UI", Arial, sans-serif;
             padding: 20px;
         }
 
-        button {
-            padding: 10px 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
         #status {
             margin-top: 15px;
-            padding: 10px;
+            padding: 12px;
             background: #f3f3f3;
             border-radius: 5px;
-            word-break: break-word;
         }
     </style>
 </head>
 
 <body>
 
-<h2>AMFI Mutual Fund Tools</h2>
+    <h2>AMFI Mutual Fund Tools</h2>
 
-<p id="excelStatus">Connecting to Excel...</p>
+    <p>Shared Runtime Test</p>
 
-<button id="testButton">Test AMFI Connection</button>
+    <div id="status">
+        Starting...
+    </div>
 
-<div id="status">
-    Waiting for test...
-</div>
+    <script>
+        Office.onReady(function(info) {
 
-<script>
+            if (info.host === Office.HostType.Excel) {
+                document.getElementById("status").innerHTML =
+                    "✓ Shared runtime connected to Excel";
+            } else {
+                document.getElementById("status").innerHTML =
+                    "Open this page inside Excel";
+            }
 
-const AMFI_URL =
-    "https://aromal-arow.github.io/amfi-excel-addin/data/NAVAll.txt";
-
-Office.onReady(function(info) {
-
-    if (info.host === Office.HostType.Excel) {
-        document.getElementById("excelStatus").innerHTML =
-            "✓ Connected to Excel";
-    } else {
-        document.getElementById("excelStatus").innerHTML =
-            "Open this page inside Excel";
-    }
-
-});
-
-document.getElementById("testButton").onclick = async function() {
-
-    const status = document.getElementById("status");
-
-    status.innerHTML = "Loading AMFI data...";
-
-    try {
-
-        const response = await fetch(AMFI_URL);
-
-        if (!response.ok) {
-            throw new Error(
-                "HTTP error " + response.status
-            );
-        }
-
-        const text = await response.text();
-
-        const lines = text
-            .split(/\r?\n/)
-            .filter(line => line.trim() !== "");
-
-        status.innerHTML =
-            "✓ AMFI connection successful!" +
-            "<br><br>" +
-            "Downloaded " +
-            lines.length.toLocaleString() +
-            " lines." +
-            "<br><br>" +
-            "<strong>Sample:</strong><br>" +
-            lines.slice(0, 3).join("<br>");
-
-    } catch(error) {
-
-        status.innerHTML =
-            "❌ AMFI connection failed" +
-            "<br><br>" +
-            error.message;
-
-    }
-
-};
-
-</script>
+        });
+    </script>
 
 </body>
 </html>
